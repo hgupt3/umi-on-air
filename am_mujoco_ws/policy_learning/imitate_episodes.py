@@ -1080,7 +1080,7 @@ if __name__ == '__main__':
     parser.add_argument('--output_dir', action='store', type=str, help='Directory to save rollout artefacts', required=False)
     parser.add_argument('--disturb', action='store_true', help='Enable disturbances in the simulation environment')
     parser.add_argument('--guidance', action='store', type=float, default=0.0, help='Guidance factor for MPC')
-    parser.add_argument('--guided_steps', action='store', type=int, default=1, help='Number of diffusion timesteps during which guidance is applied')
+    parser.add_argument('--guided_steps', action='store', type=int, default=0, help='Number of diffusion timesteps during which guidance is applied')
     parser.add_argument('--log_diffusion', action='store_true', help='Enable logging & plotting of diffusion trajectories/costs (disabled by default)')
     parser.add_argument('--acados_build_dir', default=None, type=str, help='Unique directory for ACADOS build files')
     parser.add_argument('--scale', action='store', type=float, default=0.0, help='Alpha-based scaling factor for guided diffusion throughout the process (0=disabled)')

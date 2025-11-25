@@ -205,6 +205,9 @@ class DiffusionUnetTimmPolicy(BaseImagePolicy):
             self._has_acados = hasattr(task, 'mpc_planner_mini') and hasattr(task.mpc_planner_mini, 'mpc') and hasattr(task.mpc_planner_mini.mpc, 'ocp_solver')
             self._has_forward_kin = hasattr(task, 'mpc_planner') and hasattr(task.mpc_planner, 'forward_kinematics')
 
+        # Initialize MPC solver state to None (will be populated if ACADOS is available)
+        self._mpc_solver_initial_state = None
+        
         if (self.scale > 0.0 or self.guidance > 0.0) and getattr(self, '_has_acados', False):
             # Save initial MPC solver state for warm-start restoration
             self._mpc_solver_initial_state = self._save_mpc_solver_state()

@@ -209,7 +209,7 @@ class UR10eBaseTask(base.Task):
         
         self._ur_base_bid = physics.model.name2id("base", "body")
 
-        self.max_joint_velocity = np.array([20.0, 20.0, 20.0, 20.0, 20.0, 20.0], dtype=np.float64)
+        self.max_joint_velocity = np.array([10.0, 10.0, 10.0, 10.0, 10.0, 10.0], dtype=np.float64)
         self.rollout_horizon_s = 0.64
     
     def _set_gripper_state(self, physics, state):
@@ -660,9 +660,6 @@ class UAMBaseTask(base.Task):
 
         self.camera_names = camera_names
         self.disturbance_enabled = disturbance_enabled
-        self.disturbance_thrust_x = 0.0
-        self.disturbance_thrust_y = 0.0
-        self.disturbance_thrust_z = 0.0
 
         self.controller_info_targets = []
         print(f"Universal aerial manipulation task initialized with MPC control")
@@ -676,15 +673,7 @@ class UAMBaseTask(base.Task):
         self.rfinger_jid = physics.model.name2id("arm_rfinger_joint", "joint")
         self.lfinger_qpos_addr = physics.model.jnt_qposadr[self.lfinger_jid]
         self.rfinger_qpos_addr = physics.model.jnt_qposadr[self.rfinger_jid]
-    
-    def _set_gripper_state(self, physics, state):
-        """Set gripper to initial state (OPEN or CLOSED)."""
-        value = self.GRIPPER_MAX if state == 'OPEN' else self.GRIPPER_MIN
-        physics.data.ctrl[self.lfinger_actuator_id] = value
-        physics.data.ctrl[self.rfinger_actuator_id] = value
-        physics.data.qpos[self.lfinger_qpos_addr] = value
-        physics.data.qpos[self.rfinger_qpos_addr] = value
-
+        
         # ------------------------------------------------------------
         # Disturbance (gust) model state – initialise once
         # ------------------------------------------------------------
@@ -703,6 +692,14 @@ class UAMBaseTask(base.Task):
             self._wind_range   = (-10.0, 10.0)     # N
             self._torque_range = (-0.0, 0.0)   # N·m
             self._gust_alpha   = 0.02            # smoothing factor
+    
+    def _set_gripper_state(self, physics, state):
+        """Set gripper to initial state (OPEN or CLOSED)."""
+        value = self.GRIPPER_MAX if state == 'OPEN' else self.GRIPPER_MIN
+        physics.data.ctrl[self.lfinger_actuator_id] = value
+        physics.data.ctrl[self.rfinger_actuator_id] = value
+        physics.data.qpos[self.lfinger_qpos_addr] = value
+        physics.data.qpos[self.rfinger_qpos_addr] = value
 
     def _get_mpc_warmstart_path(self):
         """Return path for storing MPC warm-start JSON for the mini solver."""
@@ -1483,6 +1480,11 @@ class CabinetUMIOracleTask(CabinetTask, UMIOracleBaseTask):
         self._set_gripper_state(physics, self._get_initial_gripper_state())
         physics.forward()
 
+    def before_step(self, action, physics, trajectory=None):
+        """Run parent control and apply gravity forces."""
+        super().before_step(action, physics, trajectory)
+        self._apply_forces(physics)
+
 class PegInHoleUMIOracleTask(PegInHoleTask, UMIOracleBaseTask):
     """Peg-in-hole task for stand-alone UMI robot (mocap control)."""
 
@@ -1510,6 +1512,11 @@ class PickAndPlaceUMIOracleTask(PickAndPlaceTask, UMIOracleBaseTask):
         self._initialize_pnp_state(physics)
         self._set_gripper_state(physics, self._get_initial_gripper_state())
         physics.forward()
+
+    def before_step(self, action, physics, trajectory=None):
+        """Run parent control and apply gravity forces."""
+        super().before_step(action, physics, trajectory)
+        self._apply_forces(physics)
 
 class RotateValveUMIOracleTask(RotateValveTask, UMIOracleBaseTask):
     """Rotate valve task for stand-alone UMI robot (mocap control)."""

@@ -1,7 +1,7 @@
 <mujoco model="hexa_scorpion_cabinet">
     <option
             timestep="0.02"
-            gravity="0 0 -9.81"
+            gravity="0 0 0"
             noslip_iterations="5"
             impratio="2.0" >
     </option>

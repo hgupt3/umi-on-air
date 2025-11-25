@@ -98,9 +98,9 @@ cd am_mujoco_ws/policy_learning
 
 | Embodiment | Description | Constraints |
 |------------|-------------|-------------|
-| `uam` | Unmanned Aerial Manipulator - hexarotor with 4-DoF scorpion arm | Highly constrained dynamics, requires careful trajectory planning |
 | `umi` | Universal Manipulation Interface - handheld gripper (oracle) | Unconstrained, perfectly tracks desired trajectories |
 | `ur10e` | UR10e robotic arm with UMI gripper | Fixed-base arm, highly capable tracking |
+| `uam` | Unmanned Aerial Manipulator - hexarotor with 4-DoF scorpion arm | Constrained dynamics, cannot follow desired trajectories closely |
 
 ### Tasks
 
@@ -108,8 +108,8 @@ cd am_mujoco_ws/policy_learning
 |------|-------------|----------------|
 | `cabinet` | Open cabinet drawer, retrieve can, place on cabinet top | 50 s |
 | `peg` | High-precision peg-in-hole insertion | 50 s |
-| `pick` | Pick and place can from bowl to target location | 50 s |
-| `valve` | Grasp and rotate valve handle | 50 s |
+| `pick` | Pick and place can from table on to the bowl | 50 s |
+| `valve` | Rotate valve handle 180 degrees | 50 s |
 
 ## Collect Your Own Dataset
 

@@ -208,7 +208,6 @@ def main(args):
 
         # Build arrays first
         qpos_arr = np.stack([episode[t].observation['qpos'] for t in range(max_T)])  # (T,8)
-        qvel_arr = np.stack([episode[t].observation['qvel'] for t in range(max_T)])  # (T,6)
         act_arr  = np.stack(action_traj)                                             # (T,8)
 
         img_arrays = {cam: np.stack([episode[t].observation['images'][cam] for t in range(max_T)])
@@ -224,7 +223,6 @@ def main(args):
 
             obs_grp = root.create_group('observations')
             obs_grp.create_dataset('qpos', data=qpos_arr)
-            obs_grp.create_dataset('qvel', data=qvel_arr)
             root.create_dataset('action', data=act_arr)
 
             img_grp = obs_grp.create_group('images')

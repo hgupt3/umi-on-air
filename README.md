@@ -20,6 +20,12 @@ For full details on the method and experimental results, see the [UMI-on-Air pro
 - [Ablation Studies](#ablation-studies)
 - [Contact](#contact)
 
+## Quick Start
+
+**To quickly evaluate pre-trained policies:**
+1. Complete the [Installation](#installation) steps (including downloading pre-trained models)
+2. Jump directly to [Policy Evaluation](#policy-evaluation) for usage examples
+
 ## Installation
 
 ### Conda Environment Setup

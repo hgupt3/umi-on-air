@@ -386,6 +386,8 @@ def main():
                         help='Additional flags forwarded verbatim to imitate_episodes.py')
     parser.add_argument('--max_retries', type=int, default=4,
                         help='Number of times to retry a failed experiment (each retry starts from a clean directory)')
+    parser.add_argument('--output_dir', default='',
+                        help='Output directory for ablation results (default: <ckpt_dir>/ablation_results)')
     args = parser.parse_args()
 
     # Determine sweep mode
@@ -402,7 +404,11 @@ def main():
     
     step_values = [int(x) for x in args.guided_steps.split(',') if x]
 
-    experiments_root = os.path.join(args.ckpt_dir, 'ablation_results')
+    # Use custom output directory if provided, otherwise default to <ckpt_dir>/ablation_results
+    if args.output_dir:
+        experiments_root = os.path.abspath(args.output_dir)
+    else:
+        experiments_root = os.path.join(args.ckpt_dir, 'ablation_results')
     os.makedirs(experiments_root, exist_ok=True)
     
     script_dir = os.path.dirname(os.path.abspath(__file__))

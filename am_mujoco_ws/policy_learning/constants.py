@@ -14,11 +14,11 @@ TASK_CONFIGS = {
         'camera_names': ['ee'],
     },
     'pick': {
-        'episode_len': 2500,
+        'episode_len': 3000,
         'camera_names': ['ee'],
     },
     'cabinet': {
-        'episode_len': 2500,
+        'episode_len': 3000,
         'camera_names': ['ee'],
     },
     'valve': {

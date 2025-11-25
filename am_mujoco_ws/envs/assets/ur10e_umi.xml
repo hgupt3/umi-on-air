@@ -2,10 +2,6 @@
     <option integrator="implicit" timestep="0.02" gravity="0 0 0"/>
     <!-- Point to UR menagerie assets while parsing the included arm -->
     <compiler meshdir="/home/harsh/flyingumi/am_mujoco_ws/mujoco_menagerie/universal_robots_ur10e/assets" angle="radian" autolimits="true"/>
-    <default>
-        <!-- Match general contact feel of 4DoF tasks -->
-        <geom friction="0.5 0.005 0.0001"/>
-    </default>
 
     <asset>
         <texture name="grid" type="2d" builtin="checker"

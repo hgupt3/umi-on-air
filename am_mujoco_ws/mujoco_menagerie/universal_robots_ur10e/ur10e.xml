@@ -138,13 +138,13 @@
                           <geom name="gripper_base_geom" type="mesh" mesh="gripper_base_mesh" mass="0.03"/>
                           <!-- left finger -->
                           <body name="lfinger_link" pos="0.08 0 0" quat="0.707 0.707 0 0">
-                            <joint name="lfinger_slide" type="slide" axis="0 1 0" range="0.001 0.06" damping="0.08"/>
-                            <geom name="lfinger_geom" type="mesh" mesh="gripper_fingertip_mesh" mass="0.03"/>
+                            <joint name="lfinger_slide" type="slide" axis="0 1 0" range="0.001 0.06" damping="0.01"/>
+                            <geom name="lfinger_geom" type="mesh" mesh="gripper_fingertip_mesh" mass="0.01" friction="1.5 0.5 0.1"/>
                           </body>
                           <!-- right finger -->
                           <body name="rfinger_link" pos="0.08 0 0" quat="0.707 -0.707 0 0">
-                            <joint name="rfinger_slide" type="slide" axis="0 1 0" range="0.001 0.06" damping="0.08"/>
-                            <geom name="rfinger_geom" type="mesh" mesh="gripper_fingertip_mesh" mass="0.03"/>
+                            <joint name="rfinger_slide" type="slide" axis="0 1 0" range="0.001 0.06" damping="0.01"/>
+                            <geom name="rfinger_geom" type="mesh" mesh="gripper_fingertip_mesh" mass="0.01" friction="1.5 0.5 0.1"/>
                           </body>
                           <!-- EE camera now attached to gripper base link -->
                           <camera name="ee" mode="fixed" pos="0.05 0.05 0" axisangle="0 1 0 -1.57" fovy="90"/>

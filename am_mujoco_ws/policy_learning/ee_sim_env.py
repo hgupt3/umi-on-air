@@ -209,7 +209,7 @@ class UR10eBaseTask(base.Task):
         
         self._ur_base_bid = physics.model.name2id("base", "body")
 
-        self.max_joint_velocity = np.array([10.0, 10.0, 10.0, 10.0, 10.0, 10.0], dtype=np.float64)
+        self.max_joint_velocity = np.array([20.0, 20.0, 20.0, 20.0, 20.0, 20.0], dtype=np.float64)
         self.rollout_horizon_s = 0.64
     
     def _set_gripper_state(self, physics, state):
@@ -1239,14 +1239,14 @@ class PickAndPlaceTask:
         # For UAM/UR10e gravity forces
         self._can_mass = physics.model.body_mass[self._can_bid]
         self._bowl_mass = physics.model.body_mass[self._bowl_bid]
-        self._grav_vec = np.array([0.0, 0.0, -0.01])
+        self._grav_vec = np.array([0.0, 0.0, -0.1])
         
     def sample_can_bowl_poses(self):
         """Sample can and bowl XY positions."""
-        can_base_xy = np.array([1.15, 0.4])
-        bowl_base_xy = np.array([1.15, 0.0])
-        can_xy = can_base_xy + np.random.uniform(-0.15, 0.15, size=2)
-        bowl_xy = bowl_base_xy + np.random.uniform(-0.15, 0.15, size=2)
+        can_base_xy = np.array([1.0, 0.3])
+        bowl_base_xy = np.array([1.0, 0.1])
+        can_xy = can_base_xy + np.random.uniform(-0.05, 0.05, size=2)
+        bowl_xy = bowl_base_xy + np.random.uniform(-0.05, 0.05, size=2)
         return can_xy, bowl_xy
     
     def _initialize_pnp_state(self, physics):
@@ -1262,7 +1262,7 @@ class PickAndPlaceTask:
     def _apply_forces(self, physics):
         """Apply gravity forces to can and bowl (for UAM/UR10e tasks)."""
         physics.data.xfrc_applied[self._can_bid, :3] = self._grav_vec
-        physics.data.xfrc_applied[self._bowl_bid, :3] = self._bowl_mass * self._grav_vec
+        physics.data.xfrc_applied[self._bowl_bid, :3] = self._grav_vec * 10
     
     def get_reward(self, physics):
         """Return 1.0 if can within 7cm of bowl."""

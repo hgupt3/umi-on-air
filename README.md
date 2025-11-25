@@ -139,9 +139,9 @@ cd am_mujoco_ws/policy_learning
 
 | Task | Description | Episode Length |
 |------|-------------|----------------|
-| `cabinet` | Open cabinet drawer, retrieve can, place on cabinet top | 50 s |
+| `cabinet` | Open cabinet drawer, retrieve can, place on cabinet top | 60 s |
 | `peg` | High-precision peg-in-hole insertion | 50 s |
-| `pick` | Pick and place can from table on to the bowl | 50 s |
+| `pick` | Pick and place can from table on to the bowl | 60 s |
 | `valve` | Rotate valve handle 180 degrees | 50 s |
 
 ## Collect Your Own Dataset

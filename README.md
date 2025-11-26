@@ -80,8 +80,8 @@ We provide pre-trained diffusion policy checkpoints trained on UMI demonstration
 
 ```bash
 # Download all pre-trained models
-wget <DOWNLOAD_LINK_HERE>
-tar -xzf pretrained_models.tar.gz -C checkpoints/
+wget https://huggingface.co/LeCAR-Lab/umi-on-air_checkpoints/resolve/main/checkpoints.tar.gz
+tar -xzf checkpoints.tar.gz
 ```
 
 This will extract the checkpoints to:
@@ -142,7 +142,7 @@ cd am_mujoco_ws/policy_learning
 | `cabinet` | Open cabinet drawer, retrieve can, place on cabinet top | 60 s |
 | `peg` | High-precision peg-in-hole insertion | 50 s |
 | `pick` | Pick and place can from table on to the bowl | 60 s |
-| `valve` | Rotate valve handle 180 degrees | 50 s |
+| `valve` | Rotate valve handle 180 degrees | 70 s |
 
 ## Collect Your Own Dataset
 
@@ -316,7 +316,8 @@ python run_ablation.py \
     [--guided_steps <comma_separated_values>] \
     [--num_rollouts <number>] \
     [--max_workers <number>] \
-    [--output_dir <custom_output_path>]
+    [--output_dir <custom_output_path>] \
+    [--disturb]
 ```
 
 ### Parameters
@@ -331,6 +332,7 @@ python run_ablation.py \
 | `--max_workers` | 4 | Number of parallel experiments |
 | `--output_dir` | `results/ablations/<task>/<timestamp>/` | Output directory for results |
 | `--resume` | disabled | Resume most recent sweep (auto-finds latest) |
+| `--disturb` | disabled | Enable wind disturbances for UAM embodiment |
 
 ### Example
 
@@ -339,8 +341,9 @@ Run ablation sweep on UAM peg task with 4 guidance values in parallel:
 ```bash
 python run_ablation.py \
     --task_name uam_peg \
-    --guidances 0.0,0.5,1.0,1.5 \
+    --guidances 0.0,1.5 \
     --num_rollouts 30 \
+    --disturb
 ```
 
 The script:
@@ -365,6 +368,22 @@ results/ablations/uam_peg/2025-11-25_18-00-00/
 ├── guidance1.5_s1/
 │   └── ...
 └── summary_heatmaps.png        # Combined results visualization
+```
+
+## Citation
+
+If you find this work useful, please cite our paper:
+
+```bibtex
+@misc{gupta2025umionairembodimentawareguidanceembodimentagnostic,
+      title={UMI-on-Air: Embodiment-Aware Guidance for Embodiment-Agnostic Visuomotor Policies}, 
+      author={Harsh Gupta and Xiaofeng Guo and Huy Ha and Chuer Pan and Muqing Cao and Dongjae Lee and Sebastian Scherer and Shuran Song and Guanya Shi},
+      year={2025},
+      eprint={2510.02614},
+      archivePrefix={arXiv},
+      primaryClass={cs.RO},
+      url={https://arxiv.org/abs/2510.02614}, 
+}
 ```
 
 ## Contact

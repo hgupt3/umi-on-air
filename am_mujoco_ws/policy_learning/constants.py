@@ -22,7 +22,7 @@ TASK_CONFIGS = {
         'camera_names': ['ee'],
     },
     'valve': {
-        'episode_len': 2500,
+        'episode_len': 3500,
         'camera_names': ['ee'],
     },
 }
@@ -33,6 +33,8 @@ SIM_TASK_CONFIGS = {
         **TASK_CONFIGS['peg'],
         'dataset_dir': DATA_DIR + '/uam_peg/demonstration/',
         'base_x_ub': 1.2,
+        'wind_range': (-10.0, 10.0),
+        'torque_range': (-0.0, 0.0),
     },
     'umi_peg': {
         **TASK_CONFIGS['peg'],
@@ -47,6 +49,8 @@ SIM_TASK_CONFIGS = {
         **TASK_CONFIGS['pick'],
         'dataset_dir': DATA_DIR + '/uam_pick/demonstration/',
         'base_x_ub': 0.4,
+        'wind_range': (-8.0, 8.0),
+        'torque_range': (-0.0, 0.0),
     },
     'umi_pick': {
         **TASK_CONFIGS['pick'],
@@ -61,6 +65,8 @@ SIM_TASK_CONFIGS = {
         **TASK_CONFIGS['cabinet'],
         'dataset_dir': DATA_DIR + '/uam_cabinet/demonstration/',
         'base_x_ub': -0.02,
+        'wind_range': (-8.0, 8.0),
+        'torque_range': (-0.0, 0.0),
     },
     'umi_cabinet': {
         **TASK_CONFIGS['cabinet'],
@@ -74,7 +80,9 @@ SIM_TASK_CONFIGS = {
     'uam_valve': {
         **TASK_CONFIGS['valve'],
         'dataset_dir': DATA_DIR + '/uam_valve/demonstration/',
-        'base_x_ub': 0.4,
+        'base_x_ub': 0.35,
+        'wind_range': (-4.0, 4.0),
+        'torque_range': (-0.0, 0.0),
     },
     'umi_valve': {
         **TASK_CONFIGS['valve'],

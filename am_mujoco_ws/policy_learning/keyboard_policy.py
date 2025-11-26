@@ -97,7 +97,7 @@ class MinecraftStyleKeyboardPolicy(SimTeleopBasePolicy):
         self.speeds = [0.001, 0.002, 0.004]  # Movement speeds for levels 1-3 (m/s)
         self.current_speed_idx = 1  # Default to speed level 2
         # ROTATION SPEED: You can modify this value to increase or decrease rotation speed
-        self.rotation_speed = 0.02
+        self.rotation_speed = 0.008
         
         # Key state tracking
         self.current_keys = set()  # Set of currently pressed keys

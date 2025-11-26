@@ -44,3 +44,6 @@ checkpoints/
 **/checkpoints/
 results/
 **/results/
+checkpoints_broken/
+checkpoints.tar.gz
+hf_model_card.md

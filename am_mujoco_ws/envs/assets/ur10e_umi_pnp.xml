@@ -2,7 +2,7 @@
     <option
             timestep="0.02"
             gravity="0 0 0"
-            noslip_iterations="20"
+            noslip_iterations="5"
             impratio="2.0" >
     </option>
 

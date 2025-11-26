@@ -688,9 +688,9 @@ class UAMBaseTask(base.Task):
             self._torque        = np.zeros(3)
             self._torque_target = np.zeros(3)
 
-            # ranges and dynamics
-            self._wind_range   = (-10.0, 10.0)     # N
-            self._torque_range = (-0.0, 0.0)   # N·m
+            # ranges and dynamics (read from task config, with defaults)
+            self._wind_range   = task_config.get('wind_range', (-8.0, 8.0))     # N
+            self._torque_range = task_config.get('torque_range', (-0.0, 0.0))   # N·m
             self._gust_alpha   = 0.02            # smoothing factor
     
     def _set_gripper_state(self, physics, state):
@@ -1239,7 +1239,7 @@ class PickAndPlaceTask:
         # For UAM/UR10e gravity forces
         self._can_mass = physics.model.body_mass[self._can_bid]
         self._bowl_mass = physics.model.body_mass[self._bowl_bid]
-        self._grav_vec = np.array([0.0, 0.0, -0.1])
+        self._grav_vec = np.array([0.0, 0.0, -0.01])
         
     def sample_can_bowl_poses(self):
         """Sample can and bowl XY positions."""
@@ -1451,8 +1451,8 @@ class RotateValveUR10eEETask(RotateValveTask, UR10eBaseTask):
 class PegInHoleUR10eEETask(PegInHoleTask, UR10eBaseTask):
     """Peg-in-hole task for UR10e + UMI gripper (IK control)."""
 
-    DEFAULT_REF_EE_POS = np.array([0.0, 0.0, 0.9])
-    BASE_POS = np.array([0.3, -0.6, 0.3])
+    DEFAULT_REF_EE_POS = np.array([0.0, 0.0, 1.2])
+    BASE_POS = np.array([0.3, -0.4, 1.2])
 
     def __init__(self, physics, random=None, camera_names=("ee",), disturbance_enabled=False):
         UR10eBaseTask.__init__(self, physics, random=random, camera_names=camera_names)

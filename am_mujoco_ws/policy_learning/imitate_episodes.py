@@ -500,7 +500,13 @@ def eval_bc(config, ckpt_name, save_episode=True):
         # Get workspace root (2 levels up from policy_learning)
         script_dir = os.path.dirname(os.path.abspath(__file__))
         workspace_root = os.path.dirname(os.path.dirname(script_dir))
-        task_base = os.path.join(workspace_root, 'results', 'eval', task_name)
+        
+        # For UAM tasks with disturbance, use uam-disturb_* folder naming
+        folder_task_name = task_name
+        if disturbance_enabled and task_name.startswith('uam_'):
+            folder_task_name = task_name.replace('uam_', 'uam-disturb_', 1)
+        
+        task_base = os.path.join(workspace_root, 'results', 'eval', folder_task_name)
         
         if resume_mode:
             # Auto-find most recent run

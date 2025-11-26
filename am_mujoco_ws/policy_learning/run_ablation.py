@@ -237,39 +237,56 @@ class ProgressMonitor:
                 else:  # Show count if many remaining
                     print(f"   ⏳ Pending: {len(pending_experiments)} experiments")
             
-            # Overall ETA - FIXED CALCULATION
+            # Overall ETA - Parallelism-aware calculation
             if self.running_experiments or pending_experiments:
-                # Time until current batch finishes (max of running experiments)
-                current_batch_eta_seconds = 0
-                if self.running_experiments:
-                    current_batch_eta_seconds = max(p.get('estimated_remaining_time', 0) for p in self.running_experiments.values())
-                
-                # Estimate time for pending experiments
                 pending_count = len(pending_experiments)
-                pending_eta_seconds = 0
+                running_count = len(self.running_experiments)
                 
-                if pending_count > 0:
-                    # Use average duration of completed experiments if available
-                    if self.completed_experiments:
-                        avg_completed_duration_minutes = sum(duration for _, duration in self.completed_experiments.values()) / len(self.completed_experiments)
-                        avg_completed_duration_seconds = avg_completed_duration_minutes * 60
+                # Get average experiment duration estimate
+                if self.completed_experiments:
+                    # Use actual durations from completed experiments (stored in minutes)
+                    avg_experiment_duration_seconds = sum(
+                        duration * 60 for _, duration in self.completed_experiments.values()
+                    ) / len(self.completed_experiments)
+                elif self.running_experiments:
+                    # Estimate from running experiments: use current progress to extrapolate
+                    durations = []
+                    for progress in self.running_experiments.values():
+                        current_ep = progress.get('current_episode', 0)
+                        total_ep = progress.get('total_episodes', 1)
+                        avg_ep_duration = progress.get('avg_episode_duration', 0)
+                        if current_ep > 0 and avg_ep_duration > 0:
+                            # Estimated total duration = avg_ep_duration * total_ep
+                            durations.append(avg_ep_duration * total_ep)
+                    if durations:
+                        avg_experiment_duration_seconds = sum(durations) / len(durations)
                     else:
-                        # Fallback estimate: assume 30 minutes per experiment
-                        avg_completed_duration_seconds = 30 * 60
-                    
-                    # Calculate how many batches of pending experiments we need
-                    available_workers_after_current = max(0, self.max_workers - len(self.running_experiments))
-                    if available_workers_after_current > 0:
-                        # Some workers will be free after current batch finishes
-                        pending_batches = math.ceil(pending_count / self.max_workers)
-                    else:
-                        # All workers busy, so pending experiments run sequentially in batches
-                        pending_batches = math.ceil(pending_count / self.max_workers)
-                    
-                    pending_eta_seconds = pending_batches * avg_completed_duration_seconds
+                        avg_experiment_duration_seconds = 30 * 60  # Fallback: 30 min
+                else:
+                    avg_experiment_duration_seconds = 30 * 60  # Fallback: 30 min
                 
-                # Total ETA = max(current batch) + time for pending batches
-                total_eta_minutes = (current_batch_eta_seconds + pending_eta_seconds) / 60
+                # Calculate total remaining work in experiment-seconds
+                # Running experiments: sum of their remaining times
+                running_remaining_seconds = sum(
+                    p.get('estimated_remaining_time', 0) 
+                    for p in self.running_experiments.values()
+                )
+                
+                # Pending experiments: each takes avg_experiment_duration
+                pending_total_seconds = pending_count * avg_experiment_duration_seconds
+                
+                # Total remaining work (in experiment-time units)
+                total_remaining_work_seconds = running_remaining_seconds + pending_total_seconds
+                
+                # With max_workers running in parallel, divide by parallelism
+                # But we can't have more workers than remaining experiments
+                effective_parallelism = min(self.max_workers, running_count + pending_count)
+                if effective_parallelism > 0:
+                    total_eta_seconds = total_remaining_work_seconds / effective_parallelism
+                else:
+                    total_eta_seconds = 0
+                
+                total_eta_minutes = total_eta_seconds / 60
                 print(f"   🕐 Overall ETA: {self.format_eta(total_eta_minutes)}")
             
             print("="*80)
@@ -281,7 +298,7 @@ def run_single_experiment(params):
     If the experiment fails, its output directory is deleted and the run is
     repeated up to `max_retries` additional times.
     """
-    g, s, ckpt_dir, task_name, num_rollouts, extra_args, script_dir, max_retries, scale_mode, param_name, experiments_root = params
+    g, s, ckpt_dir, task_name, num_rollouts, extra_args, script_dir, max_retries, scale_mode, param_name, experiments_root, disturb = params
 
     out_dir_base = os.path.join(experiments_root, f'{param_name}{g}_s{s}')
 
@@ -313,8 +330,10 @@ def run_single_experiment(params):
             '--task_name', task_name,
             '--num_rollouts', str(num_rollouts),
             '--output_dir', out_dir_base,
-            '--disturb'
         ]
+        
+        if disturb:
+            cmd.append('--disturb')
         
         # Add scale or guidance parameter based on mode
         if scale_mode:
@@ -442,6 +461,8 @@ def main():
                         help='Output directory for ablation results (default: <ckpt_dir>/ablation_results)')
     parser.add_argument('--resume', action='store_true',
                         help='Resume most recent sweep (auto-finds latest, skips completed)')
+    parser.add_argument('--disturb', action='store_true',
+                        help='Enable wind disturbances for UAM embodiment')
     args = parser.parse_args()
     
     # Auto-detect checkpoint directory if not provided
@@ -473,7 +494,13 @@ def main():
         # Get workspace root
         script_dir = os.path.dirname(os.path.abspath(__file__))
         workspace_root = os.path.dirname(os.path.dirname(script_dir))
-        ablation_base = os.path.join(workspace_root, 'results', 'ablations', args.task_name)
+        
+        # For UAM tasks with disturbance, use uam-disturb_* folder naming
+        folder_task_name = args.task_name
+        if args.disturb and args.task_name.startswith('uam_'):
+            folder_task_name = args.task_name.replace('uam_', 'uam-disturb_', 1)
+        
+        ablation_base = os.path.join(workspace_root, 'results', 'ablations', folder_task_name)
         
         if args.resume:
             # Auto-find most recent sweep
@@ -509,7 +536,7 @@ def main():
         # Add to experiments to run
         experiment_params = (g, s, args.ckpt_dir, args.task_name, 
                            args.num_rollouts, args.extra_args, script_dir, args.max_retries, 
-                           scale_mode, param_name, experiments_root)
+                           scale_mode, param_name, experiments_root, args.disturb)
         experiments_to_run.append(experiment_params)
     
     if skipped_experiments:

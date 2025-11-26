@@ -324,7 +324,7 @@ python run_ablation.py \
 
 | Parameter | Default | Description |
 |-----------|---------|-------------|
-| `--task_name` | `uam_peg` | Task to evaluate |
+| `--task_name` | *required* | Task in format `EMBODIMENT_TASK` (e.g., `uam_cabinet`) |
 | `--ckpt_dir` | *auto-detect* | Checkpoint directory (auto-detects from task name if not provided) |
 | `--guidances` | `0.0,0.5,1.0,1.5` | Comma-separated guidance values to test |
 | `--guided_steps` | `1` | Comma-separated guided step thresholds |
@@ -340,7 +340,7 @@ Run ablation sweep on UAM peg task with 4 guidance values in parallel:
 
 ```bash
 python run_ablation.py \
-    --task_name uam_peg \
+    --task_name uam_cabinet \
     --guidances 0.0,1.5 \
     --num_rollouts 30 \
     --disturb

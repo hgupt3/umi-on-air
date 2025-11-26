@@ -443,7 +443,7 @@ def auto_detect_checkpoint_dir(task_name):
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--ckpt_dir', required=False, help='Checkpoint directory (optional - will auto-detect from task_name if not provided)')
-    parser.add_argument('--task_name', default='uam_peg')
+    parser.add_argument('--task_name', required=True, help='Task in format EMBODIMENT_TASK (e.g., uam_cabinet)')
     parser.add_argument('--guidances', default='0.0,0.5,1.0,1.5',
                         help='Comma-separated list of guidance values')
     parser.add_argument('--guided_steps', default='1',

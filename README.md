@@ -267,7 +267,6 @@ python imitate_episodes.py \
     --num_rollouts 30 \
     --guidance 1.5 \
     --use_3d_viewer \
-    --disturb
 ```
 
 **Note:** Each run creates a timestamped directory. Use `--resume` to automatically continue the most recent run for that task in case there is some failure.
@@ -344,7 +343,6 @@ python run_ablation.py \
     --guidances 0.0,0.5,1.0,1.5 \
     --num_rollouts 30 \
     --max_workers 4 \
-    --disturb
 ```
 
 The script:

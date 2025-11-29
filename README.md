@@ -2,8 +2,8 @@
 # UMI-on-Air
 
 <p align="center">
-  <img src="assets/bench.gif" alt="UMI-on-Air Demo" width="400"/>
-  <img src="assets/arkit.gif" alt="ARKit Teleoperation Demo" width="400"/>
+  <img src="assets/bench.gif" alt="UMI-on-Air Demo" height="300"/>
+  <img src="assets/arkit.gif" alt="ARKit Teleoperation Demo" height="300"/>
 </p>
 
 This repository contains the simulation benchmark, environments, and evaluation tooling for **UMI-on-Air: Embodiment-Aware Guidance for Embodiment-Agnostic Visuomotor Policies**. 

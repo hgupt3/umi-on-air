@@ -25,8 +25,6 @@ sys.path.append("..")
 sys.path.append("../am_trajectory_controller/src")
 sys.path.append("../am_trajectory_controller/src/planner")
 
-from mocap_connection import calibration_data
-
 from controllers.motion_controller_4dof import UAM4DoFMotionController
 from am_trajectory_controller.src.planner.ee_mpc_acado_4dof import ArmMPCPlanner
 from am_trajectory_controller.src.planner.ee_ik_DH_4dof import DHIKPlanner
@@ -117,8 +115,6 @@ class UMIOracleBaseTask(base.Task):
         
         self.lfinger_actuator_id = physics.model.name2id("lfinger_servo", "actuator")
         self.rfinger_actuator_id = physics.model.name2id("rfinger_servo", "actuator")
-        
-        calibration_data["reference_ee_pos"] = self.DEFAULT_REF_EE_POS.copy()
     
     def _set_gripper_state(self, physics, state):
         """Set gripper to initial state (OPEN or CLOSED)."""
